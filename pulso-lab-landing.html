@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pulso Lab — IA para emprendedores y creativos</title>
+  <style>
+    :root {
+      --negro: #080808;
+      --blanco: #f5f4f0;
+      --gris: #888;
+      --borde: #1a1a1a;
+
+      --brand: #e85d2f;
+
+      --creativo: #f59e0b;
+      --creativo-bg: #1a1400;
+      --creativo-borde: #2a2000;
+
+      --emprendedor: #34d399;
+      --emprendedor-bg: #001a10;
+      --emprendedor-borde: #002a18;
+
+      --empresa: #60a5fa;
+      --empresa-bg: #00101a;
+      --empresa-borde: #001828;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: var(--negro);
+      color: var(--blanco);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* MONO */
+    .mono {
+      font-family: 'Courier New', monospace;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      background: rgba(8,8,8,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--borde);
+    }
+
+    .nav-logo {
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      letter-spacing: 4px;
+      color: var(--blanco);
+    }
+
+    .nav-logo span { color: var(--brand); }
+
+    .nav-cta {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--brand);
+      border: 1px solid var(--brand);
+      padding: 10px 24px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .nav-cta:hover {
+      background: var(--brand);
+      color: var(--negro);
+    }
+
+    /* SECCIONES BASE */
+    section {
+      padding: 120px 48px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    section.full {
+      max-width: 100%;
+      padding: 120px 48px;
+    }
+
+    .etiqueta {
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--brand);
+      margin-bottom: 24px;
+      display: block;
+    }
+
+    h1 {
+      font-size: clamp(48px, 7vw, 96px);
+      font-weight: 400;
+      letter-spacing: -3px;
+      line-height: 0.95;
+      margin-bottom: 32px;
+    }
+
+    h2 {
+      font-size: clamp(32px, 5vw, 64px);
+      font-weight: 400;
+      letter-spacing: -2px;
+      line-height: 1.05;
+      margin-bottom: 24px;
+    }
+
+    h3 {
+      font-size: 22px;
+      font-weight: 400;
+      margin-bottom: 12px;
+    }
+
+    p.grande {
+      font-size: clamp(17px, 2vw, 22px);
+      color: var(--gris);
+      max-width: 680px;
+      line-height: 1.7;
+    }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 140px;
+      padding-bottom: 80px;
+      border-bottom: 1px solid var(--borde);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(232,93,47,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232,93,47,0.03) 1px, transparent 1px);
+      background-size: 80px 80px;
+      pointer-events: none;
+    }
+
+    .hero-tag {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      letter-spacing: 4px;
+      color: var(--brand);
+      margin-bottom: 40px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hero-tag::before {
+      content: '';
+      width: 32px;
+      height: 1px;
+      background: var(--brand);
+    }
+
+    .hero-sub {
+      font-size: clamp(17px, 2vw, 22px);
+      color: #555;
+      max-width: 560px;
+      line-height: 1.6;
+      margin-bottom: 56px;
+    }
+
+    /* PERFILES PILL */
+    .perfiles {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .perfil-pill {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      padding: 10px 20px;
+      border-radius: 2px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .perfil-pill.c {
+      border: 1px solid var(--creativo);
+      color: var(--creativo);
+    }
+    .perfil-pill.c:hover { background: var(--creativo); color: var(--negro); }
+
+    .perfil-pill.e {
+      border: 1px solid var(--emprendedor);
+      color: var(--emprendedor);
+    }
+    .perfil-pill.e:hover { background: var(--emprendedor); color: var(--negro); }
+
+    .perfil-pill.b {
+      border: 1px solid var(--empresa);
+      color: var(--empresa);
+    }
+    .perfil-pill.b:hover { background: var(--empresa); color: var(--negro); }
+
+    /* CONSOLE LINE */
+    .console {
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      color: #2a2a2a;
+      margin-top: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .console .line { display: flex; gap: 16px; }
+    .console .prompt { color: var(--brand); }
+    .console .line.active .text { color: #666; }
+    .console .cursor {
+      display: inline-block;
+      width: 8px; height: 13px;
+      background: var(--brand);
+      animation: blink 1.2s step-end infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* PROBLEMA */
+    #problema {
+      border-bottom: 1px solid var(--borde);
+    }
+
+    .problema-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+      margin-top: 64px;
+    }
+
+    .problema-item {
+      padding: 32px;
+      border: 1px solid var(--borde);
+      border-left: 2px solid var(--brand);
+    }
+
+    .problema-item .num {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      color: var(--brand);
+      letter-spacing: 3px;
+      margin-bottom: 16px;
+    }
+
+    .problema-item p {
+      font-size: 16px;
+      color: #666;
+      line-height: 1.7;
+    }
+
+    .problema-item p strong { color: var(--blanco); }
+
+    /* BARBARA SHER */
+    #scanner {
+      background: #050505;
+      border-top: 1px solid var(--borde);
+      border-bottom: 1px solid var(--borde);
+    }
+
+    #scanner .inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .scanner-frase {
+      font-size: clamp(24px, 4vw, 48px);
+      font-style: italic;
+      color: #333;
+      line-height: 1.3;
+      max-width: 800px;
+      margin: 48px 0;
+    }
+
+    .scanner-frase .highlight { color: var(--blanco); font-style: normal; }
+
+    .scanner-modulos {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1px;
+      background: var(--borde);
+      margin-top: 64px;
+      border: 1px solid var(--borde);
+    }
+
+    .modulo {
+      background: var(--negro);
+      padding: 32px 28px;
+    }
+
+    .modulo .num {
+      font-family: 'Courier New', monospace;
+      font-size: 32px;
+      color: #1a1a1a;
+      margin-bottom: 12px;
+      line-height: 1;
+    }
+
+    .modulo h4 {
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--creativo);
+      margin-bottom: 8px;
+    }
+
+    .modulo p {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    /* TRES PERFILES */
+    #perfiles {
+      padding: 0;
+      max-width: 100%;
+    }
+
+    .perfiles-header {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 120px 48px 64px;
+    }
+
+    .perfiles-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .perfil-col {
+      padding: 64px 48px;
+      border-top: 1px solid var(--borde);
+      position: relative;
+    }
+
+    .perfil-col::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+
+    .perfil-col.creativo { background: var(--creativo-bg); border-right: 1px solid var(--borde); }
+    .perfil-col.creativo::after { background: var(--creativo); }
+
+    .perfil-col.emprendedor { background: var(--emprendedor-bg); border-right: 1px solid var(--borde); }
+    .perfil-col.emprendedor::after { background: var(--emprendedor); }
+
+    .perfil-col.empresa { background: var(--empresa-bg); }
+    .perfil-col.empresa::after { background: var(--empresa); }
+
+    .perfil-tag {
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      display: block;
+    }
+
+    .creativo .perfil-tag { color: var(--creativo); }
+    .emprendedor .perfil-tag { color: var(--emprendedor); }
+    .empresa .perfil-tag { color: var(--empresa); }
+
+    .perfil-col h3 {
+      font-size: 26px;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .perfil-col .descripcion {
+      font-size: 15px;
+      color: #666;
+      margin-bottom: 40px;
+      line-height: 1.7;
+    }
+
+    .aha {
+      padding: 20px;
+      margin-bottom: 40px;
+      border-radius: 2px;
+      font-size: 15px;
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    .creativo .aha { background: rgba(245,158,11,0.06); border-left: 2px solid var(--creativo); color: #b8800a; }
+    .emprendedor .aha { background: rgba(52,211,153,0.06); border-left: 2px solid var(--emprendedor); color: #1a9a6a; }
+    .empresa .aha { background: rgba(96,165,250,0.06); border-left: 2px solid var(--empresa); color: #2a7ac8; }
+
+    .servicios-lista {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .servicios-lista li {
+      font-size: 14px;
+      color: #555;
+      display: grid;
+      grid-template-columns: 20px 1fr;
+      gap: 12px;
+      line-height: 1.5;
+    }
+
+    .servicios-lista li::before {
+      content: '→';
+      font-family: 'Courier New', monospace;
+    }
+
+    .creativo .servicios-lista li::before { color: var(--creativo); }
+    .emprendedor .servicios-lista li::before { color: var(--emprendedor); }
+    .empresa .servicios-lista li::before { color: var(--empresa); }
+
+    .servicios-lista li strong { color: var(--blanco); }
+
+    /* COMO FUNCIONA */
+    #proceso {
+      border-top: 1px solid var(--borde);
+      border-bottom: 1px solid var(--borde);
+    }
+
+    .proceso-pasos {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--borde);
+      margin-top: 64px;
+    }
+
+    .proceso-paso {
+      background: var(--negro);
+      padding: 48px 40px;
+    }
+
+    .proceso-num {
+      font-family: 'Courier New', monospace;
+      font-size: 48px;
+      color: #1a1a1a;
+      line-height: 1;
+      margin-bottom: 24px;
+    }
+
+    .proceso-paso h3 {
+      font-size: 20px;
+      color: var(--blanco);
+      margin-bottom: 12px;
+    }
+
+    .proceso-paso p {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.7;
+    }
+
+    .proceso-tag {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--brand);
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    /* CTA / FORM */
+    #contacto {
+      background: #050505;
+      border-top: 1px solid var(--borde);
+      max-width: 100%;
+    }
+
+    #contacto .inner {
+      max-width: 680px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    #contacto h2 { text-align: center; margin: 0 auto 16px; }
+
+    .form-desc {
+      font-size: 17px;
+      color: #555;
+      margin-bottom: 48px;
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-align: left;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    label {
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: #444;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      background: #0d0d0d;
+      border: 1px solid #1e1e1e;
+      color: var(--blanco);
+      font-family: 'Georgia', serif;
+      font-size: 15px;
+      padding: 14px 16px;
+      outline: none;
+      border-radius: 2px;
+      transition: border-color 0.2s;
+      appearance: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--brand);
+    }
+
+    select option { background: #0d0d0d; }
+
+    .perfil-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .perfil-btn {
+      padding: 14px;
+      border: 1px solid #1e1e1e;
+      background: transparent;
+      color: #555;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      border-radius: 2px;
+    }
+
+    .perfil-btn:hover { border-color: #444; color: var(--blanco); }
+    .perfil-btn.selected-c { border-color: var(--creativo); color: var(--creativo); background: rgba(245,158,11,0.05); }
+    .perfil-btn.selected-e { border-color: var(--emprendedor); color: var(--emprendedor); background: rgba(52,211,153,0.05); }
+    .perfil-btn.selected-b { border-color: var(--empresa); color: var(--empresa); background: rgba(96,165,250,0.05); }
+
+    .btn-submit {
+      background: var(--brand);
+      color: var(--negro);
+      border: none;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 18px 40px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      margin-top: 8px;
+      border-radius: 2px;
+    }
+
+    .btn-submit:hover { opacity: 0.85; }
+
+    .form-nota {
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      color: #333;
+      text-align: center;
+      letter-spacing: 1px;
+      margin-top: 16px;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--borde);
+      padding: 40px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    footer .logo {
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      letter-spacing: 4px;
+      color: #333;
+    }
+
+    footer .logo span { color: var(--brand); }
+
+    footer .tagline {
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: #222;
+      text-transform: uppercase;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      section { padding: 80px 24px; }
+      section.full { padding: 80px 24px; }
+      .perfiles-header { padding: 80px 24px 40px; }
+      .problema-grid { grid-template-columns: 1fr; gap: 16px; }
+      .perfiles-grid { grid-template-columns: 1fr; }
+      .perfil-col { border-right: none; border-bottom: 1px solid var(--borde); }
+      .proceso-pasos { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .perfil-selector { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 16px; text-align: center; }
+      h1 { letter-spacing: -2px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">PULSO<span>.</span>LAB</div>
+  <a href="#contacto" class="nav-cta">Accedé</a>
+</nav>
+
+<!-- HERO -->
+<div id="hero" style="max-width:100%; padding-left:48px; padding-right:48px;">
+  <div class="hero-grid"></div>
+  <div style="max-width:1200px; margin:0 auto; width:100%;">
+    <div class="hero-tag">Mendoza, Argentina · IA para el mundo real</div>
+    <h1>No tenés<br>que elegir<br><span style="color:#333">una sola cosa.</span></h1>
+    <p class="hero-sub">
+      Pulso Lab combina inteligencia artificial, estrategia y pensamiento multipotencial para que construyas la vida y el negocio que realmente querés — sin sacrificar ninguna parte de vos.
+    </p>
+    <div class="perfiles">
+      <a href="#creativo" class="perfil-pill c">→ Soy creativo/a</a>
+      <a href="#emprendedor" class="perfil-pill e">→ Soy emprendedor/a</a>
+      <a href="#empresa" class="perfil-pill b">→ Represento una empresa</a>
+    </div>
+    <div class="console">
+      <div class="line"><span class="prompt">$</span><span class="text" style="color:#222">pulso-lab --init</span></div>
+      <div class="line active"><span class="prompt">></span><span class="text">Cargando tu contexto... </span><span class="cursor"></span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PROBLEMA -->
+<section id="problema">
+  <span class="etiqueta">El problema</span>
+  <h2>La IA promete mucho.<br><span style="color:#333">Y entrega genérico.</span></h2>
+  <p class="grande">Le preguntás algo. Te responde desde el promedio de internet. Sin saber quién sos, cómo pensás, a quién le hablás ni qué querés construir. Es como contratar a alguien y no contarle nada del negocio.</p>
+  <div class="problema-grid">
+    <div class="problema-item">
+      <div class="num">01 — SIN CONTEXTO</div>
+      <p>La IA responde para todos. La respuesta podría ser para cualquier persona, en cualquier industria, con cualquier objetivo. <strong>No te representa.</strong></p>
+    </div>
+    <div class="problema-item">
+      <div class="num">02 — SIN PROPÓSITO</div>
+      <p>La IA hace todo y no es buena en nada. Sin un rol definido, <strong>amplifica la confusión</strong> en lugar de clarificar el pensamiento.</p>
+    </div>
+    <div class="problema-item">
+      <div class="num">03 — SIN MÉTODO</div>
+      <p>Usás ChatGPT para todo un poco y no generás resultados concretos. <strong>La herramienta no es el problema.</strong> La falta de sistema sí.</p>
+    </div>
+    <div class="problema-item">
+      <div class="num">04 — SIN GUÍA</div>
+      <p>Aprendés por YouTube, por tutoriales desconectados, sin un hilo que conecte las herramientas con <strong>tu negocio específico.</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- BARBARA SHER — SCANNER -->
+<div id="scanner" class="full">
+  <div class="inner" style="padding: 120px 48px;">
+    <span class="etiqueta">Para los que nunca encajaron en una sola cosa</span>
+    <div class="scanner-frase">
+      "Hay personas que necesitan <span class="highlight">hacer muchas cosas a la vez.</span> No están desordenadas. No les falta disciplina. Tienen una mente que <span class="highlight">se niega a reducirse.</span>"
+    </div>
+    <p style="font-size:14px; color:#333; font-family:'Courier New',monospace; letter-spacing:2px;">— Inspirado en Barbara Sher, <em>Refuse to Choose</em></p>
+
+    <p style="font-size:17px; color:#555; max-width:600px; margin-top:48px; line-height:1.7;">
+      En Pulso Lab no te pedimos que elijas. Te damos las herramientas para que todo lo que sos — creativo, estratega, explorador, constructor — trabaje junto. La IA no reemplaza tu multiplicidad. <strong style="color:#888;">La amplifica.</strong>
+    </p>
+
+    <div class="scanner-modulos">
+      <div class="modulo">
+        <div class="num">01</div>
+        <h4>Tu mapa de intereses</h4>
+        <p>Descubrís cómo se conectan tus pasiones y qué negocio único nace de esa intersección.</p>
+      </div>
+      <div class="modulo">
+        <div class="num">02</div>
+        <h4>Contexto de alto valor</h4>
+        <p>Destilás quién sos en un documento base que hace que la IA piense exactamente como vos.</p>
+      </div>
+      <div class="modulo">
+        <div class="num">03</div>
+        <h4>Tu compañero creativo</h4>
+        <p>Un asistente entrenado en tu voz, tu filosofía y tu forma de ver el problema. No el promedio.</p>
+      </div>
+      <div class="modulo">
+        <div class="num">04</div>
+        <h4>Sistemas que sostienen</h4>
+        <p>Automatizás lo que te agota para que el espacio creativo sea real, no una promesa.</p>
+      </div>
+      <div class="modulo">
+        <div class="num">05</div>
+        <h4>Proyectos en paralelo</h4>
+        <p>Aprendés a manejar varios proyectos sin perder foco. Multipotencial no significa caótico.</p>
+      </div>
+      <div class="modulo">
+        <div class="num">06</div>
+        <h4>La vida que querés</h4>
+        <p>No elegís entre libertad y estabilidad. Construís un sistema que te da las dos.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TRES PERFILES -->
+<div id="perfiles">
+  <div class="perfiles-header">
+    <span class="etiqueta">Para quién es</span>
+    <h2>Tres caminos.<br>Un mismo método.</h2>
+    <p class="grande">La IA no cambia según quién la usa — pero nuestra forma de enseñarla sí. Trabajamos diferente con creativos, emprendedores y empresas porque sus desafíos son distintos.</p>
+  </div>
+
+  <div class="perfiles-grid">
+
+    <!-- CREATIVOS -->
+    <div class="perfil-col creativo" id="creativo">
+      <span class="perfil-tag">Creativos</span>
+      <h3>Tenés mil ideas.<br>Falta el sistema.</h3>
+      <p class="descripcion">Escritores, diseñadores, artistas, coaches, terapeutas, multipotenciales. Personas que crean desde un lugar propio y quieren que la IA amplifique su voz — no la reemplace.</p>
+
+      <div class="aha">
+        "No tengo que elegir entre ser poeta, estratega y experta en IA. Puedo ser todo eso — y la IA me ayuda a que cada parte trabaje con la otra."
+      </div>
+
+      <ul class="servicios-lista">
+        <li><div><strong>Taller multipotencial + IA</strong><br>Cómo construir una vida creativa sin tener que elegir quién sos</div></li>
+        <li><div><strong>Compañero creativo personalizado</strong><br>Un agente entrenado en tu voz, tu filosofía y tu audiencia</div></li>
+        <li><div><strong>Brand voice y contenido</strong><br>Tu identidad comunicacional creada con IA — pero que suena exactamente a vos</div></li>
+        <li><div><strong>Sesiones 1:1 de estrategia creativa</strong><br>Clarificás tu propuesta, tu cliente y tu mensaje en una sola sesión</div></li>
+      </ul>
+    </div>
+
+    <!-- EMPRENDEDORES -->
+    <div class="perfil-col emprendedor" id="emprendedor">
+      <span class="perfil-tag">Emprendedores</span>
+      <h3>Sabés qué querés.<br>Falta tiempo para lograrlo.</h3>
+      <p class="descripcion">Negocios unipersonales, startups, freelancers. Personas que ya tienen un proyecto en marcha y necesitan que la IA se convierta en el miembro del equipo que nunca duerme.</p>
+
+      <div class="aha">
+        "Pasé de explicar lo mismo tres veces por semana a tener un sistema que lo hace solo. Ahora uso ese tiempo para crecer."
+      </div>
+
+      <ul class="servicios-lista">
+        <li><div><strong>Curso IA para emprendedores</strong><br>De cero a tener un sistema de IA funcionando en tu negocio</div></li>
+        <li><div><strong>Tu sistema de IA armado</strong><br>Diseñamos e implementamos los flujos que más tiempo te roban</div></li>
+        <li><div><strong>Automatización de procesos</strong><br>Presupuestos, respuestas a clientes, reportes — sin intervención manual</div></li>
+        <li><div><strong>Estrategia de marketing con IA</strong><br>Ideas de marketing diseñadas para tu negocio específico, no para todos</div></li>
+      </ul>
+    </div>
+
+    <!-- EMPRESAS -->
+    <div class="perfil-col empresa" id="empresa">
+      <span class="perfil-tag">Empresas</span>
+      <h3>El equipo existe.<br>Los procesos los frenan.</h3>
+      <p class="descripcion">Medianas y grandes empresas que quieren que sus equipos trabajen con IA — no que la teman. Capacitación real, aplicada a sus procesos, con resultados medibles.</p>
+
+      <div class="aha">
+        "En tres semanas, el equipo de ventas dejó de hacer reportes manuales. Eso son 6 horas por semana que ahora usan en cerrar clientes."
+      </div>
+
+      <ul class="servicios-lista">
+        <li><div><strong>Capacitación in-company</strong><br>Talleres de IA adaptados al rubro, el equipo y los objetivos de la empresa</div></li>
+        <li><div><strong>Auditoría de procesos</strong><br>Identificamos los 3 flujos que más tiempo roban y los automatizamos</div></li>
+        <li><div><strong>Implementación de sistemas</strong><br>Reportes, análisis, comunicación interna — funcionando con IA</div></li>
+        <li><div><strong>Consultoría SEO + IA</strong><br>Visibilidad real en buscadores y en los nuevos motores de IA</div></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- COMO FUNCIONA -->
+<section id="proceso">
+  <span class="etiqueta">Cómo funciona</span>
+  <h2>Un método.<br>No un curso más.</h2>
+  <p class="grande">No te enseñamos a usar ChatGPT. Te enseñamos a pensar con IA — desde quién sos, para qué lo usás y con qué conocimiento lo alimentás.</p>
+
+  <div class="proceso-pasos">
+    <div class="proceso-paso">
+      <div class="proceso-num">01</div>
+      <span class="proceso-tag">CONTEXTO</span>
+      <h3>La IA te conoce</h3>
+      <p>Construís tu documento base — quién sos, cómo pensás, a quién le hablás. A partir de ahí, cada respuesta de la IA es tuya. No del promedio de internet.</p>
+    </div>
+    <div class="proceso-paso">
+      <div class="proceso-num">02</div>
+      <span class="proceso-tag">PROPÓSITO</span>
+      <h3>Cada agente tiene un rol</h3>
+      <p>Le definís a la IA exactamente para qué existe en tu vida o tu negocio. Límites claros, propósito específico. La diferencia entre un asistente mediocre y uno que te cambia el día.</p>
+    </div>
+    <div class="proceso-paso">
+      <div class="proceso-num">03</div>
+      <span class="proceso-tag">HABILIDADES</span>
+      <h3>Conocimiento curado</h3>
+      <p>Le das fuentes específicas, autores, metodologías. La IA deja de buscar en el promedio de todo internet y piensa desde los marcos conceptuales que vos elegiste.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FORM -->
+<div id="contacto" class="full">
+  <div class="inner" style="padding: 120px 48px;">
+    <span class="etiqueta" style="text-align:center; display:block;">Primeros pasos</span>
+    <h2>Empezá ahora.</h2>
+    <p class="form-desc">Contanos brevemente quién sos y qué necesitás. Te respondemos en menos de 24 horas con un plan concreto.</p>
+
+    <form onsubmit="handleSubmit(event)">
+      <div class="form-row">
+        <div>
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" placeholder="Tu nombre" required />
+        </div>
+        <div>
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="tu@email.com" required />
+        </div>
+      </div>
+
+      <div>
+        <label>¿Con cuál te identificás?</label>
+        <div class="perfil-selector">
+          <button type="button" class="perfil-btn" onclick="selectPerfil(this, 'c')">Creativo/a</button>
+          <button type="button" class="perfil-btn" onclick="selectPerfil(this, 'e')">Emprendedor/a</button>
+          <button type="button" class="perfil-btn" onclick="selectPerfil(this, 'b')">Empresa</button>
+        </div>
+        <input type="hidden" id="perfil" name="perfil" />
+      </div>
+
+      <div>
+        <label for="mensaje">¿Qué querés resolver? (opcional)</label>
+        <textarea id="mensaje" rows="3" placeholder="Contame brevemente..."></textarea>
+      </div>
+
+      <button type="submit" class="btn-submit">Quiero empezar →</button>
+      <p class="form-nota">Sin spam. Sin newsletters que nadie lee. Solo una conversación real.</p>
+    </form>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo">PULSO<span>.</span>LAB</div>
+  <div class="tagline">IA para emprendedores y creativos · Mendoza, Argentina</div>
+</footer>
+
+<script>
+  function selectPerfil(btn, tipo) {
+    document.querySelectorAll('.perfil-btn').forEach(b => {
+      b.classList.remove('selected-c', 'selected-e', 'selected-b');
+    });
+    btn.classList.add('selected-' + tipo);
+    document.getElementById('perfil').value = tipo === 'c' ? 'creativo' : tipo === 'e' ? 'emprendedor' : 'empresa';
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('.btn-submit');
+    btn.textContent = 'Enviado ✓';
+    btn.style.opacity = '0.6';
+    btn.disabled = true;
+  }
+
+  // Smooth anchor
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
